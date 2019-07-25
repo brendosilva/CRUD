@@ -1,23 +1,32 @@
 <?php
 
-  session_start();
+  session_start($input);
   require_once "db_connect.php";
+
+  function clear($input) {
+    global $connect;
+
+    $var = mysqli_escape_string($connect, $input);
+    $var = htmlspecialchars($var);
+    return $var;
+
+  }
   
   if(isset($_POST['btn-cadastrar'])):
-    $nome = mysqli_escape_string($connect, $_POST['nome']);
-    $sobrenome = mysqli_escape_string($connect, $_POST['sobrenome']);
-    $email = mysqli_escape_string($connect, $_POST['e-mail']);
-    $idade = mysqli_escape_string($connect, $_POST['idade']);
+    $nome = clear($_POST['nome']);
+    $sobrenome = clear( $_POST['sobrenome']);
+    $email = clear( $_POST['e-mail']);
+    $idade = clear( $_POST['idade']);
 
     $sql = "INSERT INTO clientes (nome, sobrenome, email, idade) VALUES (
       '$nome', '$sobrenome', '$email', '$idade'
     )";
 
-if(mysqli_query($connect, $sql)):
-  $_SESSION['mensagem'] = "Cadastrado com sucesso";
-  header('location: ../index.php');
-else:
-  $_SESSION['mensagem'] = "Erro ao cadastro";
-  header('location: ../index.php');
+  if(mysqli_query($connect, $sql)):
+    $_SESSION['mensagem'] = "Cadastrado com sucesso";
+    header('location: ../index.php');
+  else:
+    $_SESSION['mensagem'] = "Erro ao cadastro";
+    header('location: ../index.php');
 endif;
 endif;
